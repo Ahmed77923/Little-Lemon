@@ -1,0 +1,44 @@
+.conterchicago {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+}
+.chicago {
+  display: flex;
+  margin-left: 150px;
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fefefe;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.chicago-text {
+  flex: 1;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.chicago-text h2 {
+  font-size: 2rem;
+  color: #333;
+}
+
+.chicago-text p {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #555;
+}
+
+.chicago-image {
+  flex: 1;
+}
+
+.chicago-image img {
+  max-width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
