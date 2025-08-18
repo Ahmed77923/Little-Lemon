@@ -8,6 +8,8 @@ import HomePage from "./pages/HomePage/HomePage.jsx";
 import BookingPage from "./compontens/BookingPage/BookingPage.jsx";
 import Chicago from "./compontens/Chicago/Chicago.jsx";
 function App() {
+ 
+
   return (
     <>
       <Navbar />

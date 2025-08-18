@@ -1,27 +1,64 @@
 // src/pages/BookingPage.jsx
-import { useState } from "react";
-import "./BookingPage.css"; // تقدر تكتبها بعدين
+import { useReducer } from "react";
+import "./BookingPage.css";
 
-const BookingPage = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    date: "",
-    time: "",
-    guests: 1,
-  });
+// Reducer function
+const initialState = {
+  name: "",
+  date: "",
+  time: "",
+  guests: 1,
+  loading: false,
+  error: null,
+  success: null,
+};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "SET_FIELD":
+      return { ...state, [action.field]: action.value };
+    case "SUBMIT_START":
+      return { ...state, loading: true, error: null, success: null };
+    case "SUBMIT_SUCCESS":
+      return { ...initialState, success: action.message }; // reset form
+    case "SUBMIT_ERROR":
+      return { ...state, loading: false, error: action.error };
+    default:
+      return state;
+  }
+}
+
+export default function BookingPage() {
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    dispatch({ type: "SET_FIELD", field: e.target.name, value: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(`تم حجز طاولة لـ ${formData.name} في ${formData.date} الساعة ${formData.time}`);
-  
+    dispatch({ type: "SUBMIT_START" });
+
+    try {
+      // هنا مكان API، ممكن تغيّر الرابط لو عندك API حقيقي
+      const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: state.name,
+          date: state.date,
+          time: state.time,
+          guests: state.guests,
+        }),
+      });
+
+      if (!response.ok) throw new Error("فشل الحجز 😬");
+
+      const result = await response.json();
+      dispatch({ type: "SUBMIT_SUCCESS", message: `تم الحجز بنجاح! رقم الحجز: ${result.id}` });
+    } catch (error) {
+      dispatch({ type: "SUBMIT_ERROR", error: error.message });
+    }
   };
 
   return (
@@ -30,17 +67,17 @@ const BookingPage = () => {
       <form onSubmit={handleSubmit}>
         <label>
           الاسم:
-          <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+          <input type="text" name="name" value={state.name} onChange={handleChange} required />
         </label>
 
         <label>
           التاريخ:
-          <input type="date" name="date" value={formData.date} onChange={handleChange} required />
+          <input type="date" name="date" value={state.date} onChange={handleChange} required />
         </label>
 
         <label>
           الوقت:
-          <input type="time" name="time" value={formData.time} onChange={handleChange} required />
+          <input type="time" name="time" value={state.time} onChange={handleChange} required />
         </label>
 
         <label>
@@ -48,7 +85,7 @@ const BookingPage = () => {
           <input
             type="number"
             name="guests"
-            value={formData.guests}
+            value={state.guests}
             min="1"
             max="20"
             onChange={handleChange}
@@ -56,10 +93,13 @@ const BookingPage = () => {
           />
         </label>
 
-        <button type="submit">احجز الآن</button>
+        <button type="submit" disabled={state.loading}>
+          {state.loading ? "جارٍ الحجز..." : "احجز الآن"}
+        </button>
       </form>
+
+      {state.error && <p className="error">{state.error}</p>}
+      {state.success && <p className="success">{state.success}</p>}
     </section>
   );
-};
-
-export default BookingPage;
+}
