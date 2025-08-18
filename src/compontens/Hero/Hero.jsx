@@ -46,8 +46,8 @@ export default function Hero() {
     <section className="hero">
       <div className="hero-slide" style={{ backgroundImage: `url(${slides[current].image})` }}>
         <div className="hero-content">
-          <h1>{slides[current].title}</h1>
-          <h2>{slides[current].subtitle}</h2>
+          <p>{slides[current].title}</p>
+          <p>{slides[current].subtitle}</p>
           <p>{slides[current].text}</p>
           <Link to="/booking" className="hero-button">
             Reserve a Table

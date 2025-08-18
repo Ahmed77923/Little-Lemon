@@ -71,7 +71,7 @@ export default function Navbar() {
         </li>
         <li>
           <Link className="a" to="/chicago" onClick={handleLinkClick}>
-            Chicago
+            chicago
           </Link>
         </li>
       </ul>
